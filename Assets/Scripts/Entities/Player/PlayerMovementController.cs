@@ -12,13 +12,13 @@ public class PlayerMovementController : MonoBehaviour
 
     private PlayerState currentState = PlayerState.Move;
     private Rigidbody _rigidbody;
-    private AttackController attackController;
+    private PlayerAttackController attackController;
 
     void Start()
     {
         _rigidbody = GetComponent<Rigidbody>();
         _rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;   //넘어짐 방지
-        attackController = GetComponent<AttackController>();
+        attackController = GetComponent<PlayerAttackController>();
     }
 
     private void FixedUpdate()  //rigidbody 
@@ -52,7 +52,7 @@ public class PlayerMovementController : MonoBehaviour
                 if(targetEnemy != null && Vector3.Distance(transform.position, targetEnemy.position) < attackRange)
                 {
                     //To do. AttackController에서 PerformAttack(targetEnemy)
-                    Debug.Log("Attack!");
+                    attackController.PerformAttack(targetEnemy);
                 }
                 else if(targetEnemy != null && Vector3.Distance(transform.position, targetEnemy.position) > attackRange) //null이면 targetEnemy 죽었음.
                 {
