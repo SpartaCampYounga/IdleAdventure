@@ -16,7 +16,7 @@ public class PlayerMovementController : MonoBehaviour
 
     void Start()
     {
-        _rigidbody = GetComponentInChildren<Rigidbody>();
+        _rigidbody = GetComponent<Rigidbody>();
         _rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;   //넘어짐 방지
         attackController = GetComponent<AttackController>();
     }
