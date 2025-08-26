@@ -31,10 +31,8 @@ public class PlayerMovementController : MonoBehaviour
             case PlayerState.Move:
                 if (Vector3.Distance(transform.position, targetEnemy.position) < attackRange)
                 {
-                    //To do: Attack으로 바꾸기
                     _rigidbody.velocity = Vector3.zero;
-                    currentState = PlayerState.Idle;
-                    //currentState = PlayerState.Attack;
+                    currentState = PlayerState.Attack;
                 }
 
                 Vector3 direction = (targetEnemy.position - transform.position).normalized;
@@ -51,11 +49,19 @@ public class PlayerMovementController : MonoBehaviour
                 break;
             case PlayerState.Attack:
                 _rigidbody.velocity = Vector3.zero;
-                if(targetEnemy != null)
+                if(targetEnemy != null && Vector3.Distance(transform.position, targetEnemy.position) < attackRange)
                 {
                     //To do. AttackController에서 PerformAttack(targetEnemy)
+                    Debug.Log("Attack!");
                 }
-                //To do. 만약 Enemy가 죽으면? targetEnemy null처리, currentState Idle.
+                else if(targetEnemy != null && Vector3.Distance(transform.position, targetEnemy.position) > attackRange) //null이면 targetEnemy 죽었음.
+                {
+                    currentState = PlayerState.Move;
+                }
+                else
+                {
+                    currentState = PlayerState.Idle;
+                }
                 break;
         }
     }
