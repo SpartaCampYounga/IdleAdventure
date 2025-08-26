@@ -10,19 +10,86 @@ public class EnemyController : MonoBehaviour, IDamagable
 
     [Header("Status")]
     public float moveSpeed = 3f;
+    public float rotationSpeed = 5f;
+    public int attactDamage = 10;
+    public float attactRange = 2f;
+    public float attackInterval = 1f;
     
     [Header("Condition")]
     public int currentHealth;
     public int maxHealth = 100;
 
+    private Rigidbody _rigidbody;
+    private Transform playerTarget;
+    private bool canAttack = true;
+
     private void Awake()
     {
         id = nextId++;
     }
+
     private void Start()
     {
         currentHealth = maxHealth;
+        _rigidbody = GetComponent<Rigidbody>();
+        _rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+
+        PlayerCondition player = FindAnyObjectByType<PlayerCondition>();
+        if (player != null) 
+        {
+            playerTarget = player.transform;
+        }
     }
+
+    private void FixedUpdate()
+    {
+        if (playerTarget == null)
+        {
+            //플레이어 없으므로 Idle
+            _rigidbody.velocity = Vector3.zero;
+            return;
+        }
+
+        float distanceToPlayer = Vector3.Distance(transform.position, playerTarget.position);
+
+        if(distanceToPlayer < attactRange)  //공격범위 내
+        {
+            _rigidbody.velocity = Vector3.zero;
+            PerformAttack();
+        }
+        else //공격 범위 밖
+        {
+            Vector3 direction = (playerTarget.position - transform.position).normalized;
+            direction.y = 0;
+
+            _rigidbody.velocity = direction * moveSpeed;
+
+            Quaternion targetRotation = Quaternion.LookRotation(direction);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.fixedDeltaTime);
+        }
+    }
+
+    private void PerformAttack()
+    {
+        if(canAttack)
+        {
+            IDamagable damagable = playerTarget.GetComponent<IDamagable>();
+            if (damagable != null)
+            {
+                damagable.TakeDamage(attactDamage);
+
+                StartCoroutine(AttackCooldownCoroutine());
+            }
+        }
+    }
+
+    private IEnumerator AttackCooldownCoroutine()
+    {
+        canAttack = false;
+        yield return new WaitForSeconds(attackInterval);
+        canAttack = true;
+    }
+
     public void TakeDamage(int damage)
     {
         currentHealth -= damage;
