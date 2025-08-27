@@ -5,36 +5,41 @@ using UnityEngine;
 public class EnemyController : MonoBehaviour, IDamagable
 {
     [Header("Configuration")]
-    private static int nextId = 1;
-    public int id;
+    //private static int nextId = 1;
+    //public int id;  //임시 이너미 구분하려고 썼었음.
+    public EnemyData enemyData;
 
-    [Header("Status")]
+    [Header("Movement")]
     public float moveSpeed = 3f;
     public float rotationSpeed = 5f;
-    public int attactDamage = 10;
-    public float attactRange = 2f;
-    public float attackInterval = 1f;
+
+    [Header("Status")]
+    //public int attactDamage = 10;
+    //public float attactRange = 2f;
+    //public float attackInterval = 1f;
     
-    [Header("Condition")]
     public int currentHealth;
-    public int maxHealth = 30;
+    //public int maxHealth = 30;
 
     [Header("Reward")]
-    public int rewardGold = 10;
-    public int rewardEXP = 30;
+    //public int rewardGold = 10;
+    //public int rewardEXP = 30;
 
     private Rigidbody _rigidbody;
     private Transform playerTarget;
     private bool canAttack = true;
 
-    private void Awake()
-    {
-        id = nextId++;
-    }
+    //private void Awake()
+    //{
+    //    id = nextId++;
+    //}
 
     private void Start()
     {
-        currentHealth = maxHealth;
+        if(enemyData != null)
+        {
+            Init(enemyData);
+        }
         _rigidbody = GetComponent<Rigidbody>();
         _rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
 
@@ -43,6 +48,12 @@ public class EnemyController : MonoBehaviour, IDamagable
         {
             playerTarget = player.transform;
         }
+    }
+    
+    public void Init(EnemyData enemyData)
+    {
+        this.enemyData = enemyData;
+        this.currentHealth = enemyData.maxHealth;
     }
 
     private void FixedUpdate()
@@ -56,7 +67,7 @@ public class EnemyController : MonoBehaviour, IDamagable
 
         float distanceToPlayer = Vector3.Distance(transform.position, playerTarget.position);
 
-        if(distanceToPlayer < attactRange)  //공격범위 내
+        if(distanceToPlayer < enemyData.attackRange)  //공격범위 내
         {
             _rigidbody.velocity = Vector3.zero;
             PerformAttack();
@@ -80,7 +91,7 @@ public class EnemyController : MonoBehaviour, IDamagable
             IDamagable damagable = playerTarget.GetComponent<IDamagable>();
             if (damagable != null && damagable is PlayerCondition)
             {
-                damagable.TakeDamage(attactDamage);
+                damagable.TakeDamage(enemyData.attackDamage);
 
                 StartCoroutine(AttackCooldownCoroutine());
             }
@@ -90,14 +101,14 @@ public class EnemyController : MonoBehaviour, IDamagable
     private IEnumerator AttackCooldownCoroutine()
     {
         canAttack = false;
-        yield return new WaitForSeconds(attackInterval);
+        yield return new WaitForSeconds(enemyData.attactInterval);
         canAttack = true;
     }
 
     public void TakeDamage(int damage)
     {
         currentHealth -= damage;
-        Debug.Log($"{id}(이)가 {damage}를 입어 체력이 {currentHealth} / {maxHealth}가 되었다.");
+        Debug.Log($"{enemyData.name}(이)가 {damage}를 입어 체력이 {currentHealth} / {enemyData.maxHealth}가 되었다.");
 
         if(currentHealth <= 0)
         {
@@ -107,14 +118,14 @@ public class EnemyController : MonoBehaviour, IDamagable
 
     void Die()
     {
-        Debug.Log($"{id}(이)가 처치되었습니다.");
+        Debug.Log($"{enemyData.name}(이)가 처치되었습니다.");
         RewardPlayer();
         Destroy(gameObject);    //to do: 오브젝트 풀링 배우면 Destory 대신에 오브젝트 풀링 쓰기.
     }
 
     void RewardPlayer()
     {
-        GameManager.Instance.EarnGold(rewardGold);
-        GameManager.Instance.EarnEXP(rewardEXP);
+        GameManager.Instance.EarnGold(enemyData.rewardGold);
+        GameManager.Instance.EarnEXP(enemyData.rewardEXP);
     }
 }

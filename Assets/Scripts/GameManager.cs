@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -81,12 +79,20 @@ public class GameManager : MonoBehaviour
     public void EarnEXP(int amount)
     {
         exp += amount; 
-        if(exp > maxEXP)
+        if(exp >= maxEXP)
         {
-            exp -= maxEXP;
-            level++;
+            LevelUp();
             OnLevelChanged?.Invoke();
         }
         OnExpChanged?.Invoke();
+    }
+    private void LevelUp()
+    {
+        exp -= maxEXP;
+        level++;
+        if(exp >= maxEXP)
+        {
+            LevelUp();
+        }
     }
 }
