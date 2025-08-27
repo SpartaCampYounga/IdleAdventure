@@ -8,17 +8,42 @@ public class PlayerMovementController : MonoBehaviour
     public float moveSpeed = 5f;
     public float attackRange = 2f;
     public float rotationSpeed = 5f;
-    public Transform targetEnemy;
 
-    private PlayerState currentState = PlayerState.Move;
+    private PlayerState currentState = PlayerState.Idle;
     private Rigidbody _rigidbody;
     private PlayerAttackController attackController;
+
+    [Header("Enemies")]
+    [SerializeField ]private List<GameObject> enemyTargets;  //GameManager에서 Stage 변경될때 지정해주기. 일단은 SerializeField 설정
+    public Transform targetEnemy;
 
     void Start()
     {
         _rigidbody = GetComponent<Rigidbody>();
         _rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;   //넘어짐 방지
         attackController = GetComponent<PlayerAttackController>();
+    }
+
+    private void Update()
+    {
+        if(targetEnemy == null)
+        {
+            FindNewTargetFromList();
+        }
+        else
+        {
+            float distanceToTarget = Vector3.Distance(transform.position, targetEnemy.position);
+
+            if (distanceToTarget < attackRange)
+            {
+                currentState = PlayerState.Attack;
+            }
+            else
+            {
+                currentState = PlayerState.Move;
+            }
+
+        }
     }
 
     private void FixedUpdate()  //rigidbody 
@@ -29,12 +54,11 @@ public class PlayerMovementController : MonoBehaviour
                 _rigidbody.velocity = Vector3.zero;
                 break;
             case PlayerState.Move:
-                if (Vector3.Distance(transform.position, targetEnemy.position) < attackRange)
-                {
-                    _rigidbody.velocity = Vector3.zero;
-                    currentState = PlayerState.Attack;
-                }
-
+                //if (Vector3.Distance(transform.position, targetEnemy.position) < attackRange)
+                //{
+                //    _rigidbody.velocity = Vector3.zero;
+                //    currentState = PlayerState.Attack;
+                //}
                 Vector3 direction = (targetEnemy.position - transform.position).normalized;
                 direction.y = 0;
 
@@ -49,20 +73,44 @@ public class PlayerMovementController : MonoBehaviour
                 break;
             case PlayerState.Attack:
                 _rigidbody.velocity = Vector3.zero;
-                if(targetEnemy != null && Vector3.Distance(transform.position, targetEnemy.position) < attackRange)
+                if(targetEnemy != null)
                 {
-                    //To do. AttackController에서 PerformAttack(targetEnemy)
-                    attackController.PerformAttack(targetEnemy);
-                }
-                else if(targetEnemy != null && Vector3.Distance(transform.position, targetEnemy.position) > attackRange) //null이면 targetEnemy 죽었음.
-                {
-                    currentState = PlayerState.Move;
-                }
-                else
-                {
-                    currentState = PlayerState.Idle;
+                    IDamagable damagableTarget = targetEnemy.gameObject.GetComponent<IDamagable>();
+                    attackController.PerformAttack(damagableTarget);
                 }
                 break;
         }
+    }
+
+    private void FindNewTargetFromList()
+    {
+        if (enemyTargets == null || enemyTargets.Count == 0)
+        {
+            //todo: Stage Clear
+            return;
+        }
+
+        GameObject closestTargetObject = null;
+        float closestDistance = Mathf.Infinity; //Max값을 무한으로 일단 지정
+
+        for (int i = 0; i < enemyTargets.Count; i++)
+        {
+            if (enemyTargets[i] == null)
+            {
+                enemyTargets.RemoveAt(i);
+                i--;    //제거한만큼 당기기
+                continue;
+            }
+
+            float distance = Vector3.Distance(transform.position, enemyTargets[i].transform.position);
+
+            if(distance < closestDistance)
+            {
+                closestDistance = distance;
+                closestTargetObject = enemyTargets[i];
+            }
+        }
+
+        targetEnemy = closestTargetObject != null ? closestTargetObject.transform : null;
     }
 }

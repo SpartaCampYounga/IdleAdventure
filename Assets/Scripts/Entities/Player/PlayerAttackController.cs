@@ -10,15 +10,13 @@ public class PlayerAttackController : MonoBehaviour
 
     private bool canAttack = true;
 
-    public void PerformAttack(Transform target)
+    public void PerformAttack(IDamagable target)
     {
         if (canAttack)
         {
-            IDamagable damagable = target.GetComponent<IDamagable>();
-
-            if (damagable != null)
+            if (target != null)
             {
-                damagable.TakeDamage(attackDamage);
+                target.TakeDamage(attackDamage);
 
                 StartCoroutine(AttackCooldownCoroutine());
             }

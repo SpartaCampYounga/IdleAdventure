@@ -17,7 +17,7 @@ public class EnemyController : MonoBehaviour, IDamagable
     
     [Header("Condition")]
     public int currentHealth;
-    public int maxHealth = 100;
+    public int maxHealth = 30;
 
     private Rigidbody _rigidbody;
     private Transform playerTarget;
@@ -74,7 +74,7 @@ public class EnemyController : MonoBehaviour, IDamagable
         if(canAttack)
         {
             IDamagable damagable = playerTarget.GetComponent<IDamagable>();
-            if (damagable != null)
+            if (damagable != null && damagable is PlayerCondition)
             {
                 damagable.TakeDamage(attactDamage);
 

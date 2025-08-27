@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerCondition : MonoBehaviour, IDamagable
@@ -14,6 +12,7 @@ public class PlayerCondition : MonoBehaviour, IDamagable
     private void Start()
     {
         currentHealth = maxHealth;
+        OnHPChanged?.Invoke();
     }
 
     public void TakeDamage(int damage)
@@ -22,9 +21,15 @@ public class PlayerCondition : MonoBehaviour, IDamagable
 
         Debug.Log($"Player (이)가 {damage}를 입어 체력이 {currentHealth} / {maxHealth}가 되었다.");
 
-        if(OnHPChanged != null)
-        {
-            OnHPChanged();
-        }
+        OnHPChanged?.Invoke();
+    }
+
+    public void GetHealed(int amount)
+    {
+        currentHealth = Mathf.Min(currentHealth + amount, maxHealth);
+
+        Debug.Log($"Player (이)가 {amount}를 회복하여 체력이 {currentHealth} / {maxHealth}가 되었다.");
+
+        OnHPChanged?.Invoke();
     }
 }
