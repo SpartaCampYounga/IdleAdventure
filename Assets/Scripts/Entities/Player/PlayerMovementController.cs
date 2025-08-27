@@ -48,24 +48,28 @@ public class PlayerMovementController : MonoBehaviour
 
     private void FixedUpdate()  //rigidbody 
     {
-        if (targetEnemy != null)
+        if (targetEnemy == null)
         {
-            Vector3 direction = (targetEnemy.position - transform.position).normalized;
-            direction.y = 0;
-
-            if (direction != Vector3.zero)
-            {
-                Quaternion targetRotation = Quaternion.LookRotation(direction);
-                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.fixedDeltaTime);
-            }
+            currentState = PlayerState.Idle;
+            _rigidbody.velocity = Vector3.zero; 
+            return;
         }
+
+        Vector3 direction = (targetEnemy.position - transform.position).normalized;
+        direction.y = 0;
+
+        if (direction != Vector3.zero)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(direction);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.fixedDeltaTime);
+        }
+
         switch (currentState)
         {
             case PlayerState.Idle:
                 _rigidbody.velocity = Vector3.zero;
                 break;
             case PlayerState.Move:
-                if (targetEnemy == null) break;
                 //높이 속도 유지하면서 이동하기. //음.. 점프 기능 없는데 필요한가?
                 Vector3 moveVelocity = (targetEnemy.position - transform.position).normalized * moveSpeed;
                 moveVelocity.y = _rigidbody.velocity.y;
