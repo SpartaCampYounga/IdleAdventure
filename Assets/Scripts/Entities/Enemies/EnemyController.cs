@@ -21,6 +21,7 @@ public class EnemyController : MonoBehaviour, IDamagable
 
     [Header("Reward")]
     public int rewardGold = 10;
+    public int rewardEXP = 30;
 
     private Rigidbody _rigidbody;
     private Transform playerTarget;
@@ -114,5 +115,6 @@ public class EnemyController : MonoBehaviour, IDamagable
     void RewardPlayer()
     {
         GameManager.Instance.EarnGold(rewardGold);
+        GameManager.Instance.EarnEXP(rewardEXP);
     }
 }

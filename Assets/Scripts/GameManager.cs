@@ -8,16 +8,14 @@ public class GameManager : MonoBehaviour
     [Header("Player")]
     public Player player;
     public int gold { get; private set; }
-    //public int Gold
-    //{
-    //    get { return gold; }
-    //    private set
-    //    { 
-    //        gold = value;
-    //        OnGoldChanged?.Invoke();
-    //    }
-    //}
+    public int level { get; private set; }
+    public int exp { get; private set; }
+
     public Action OnGoldChanged;
+    public Action OnLevelChanged;
+    public Action OnExpChanged;
+
+    public int maxEXP = 50; //임시 변수. //todo: 레벨업 공식 만들기.
 
     private static GameManager instance;
     public static GameManager Instance
@@ -43,6 +41,7 @@ public class GameManager : MonoBehaviour
         }
         player = FindObjectOfType<Player>();
         gold = 0;
+        level = 1;
     }
 
     private void Update()
@@ -77,5 +76,17 @@ public class GameManager : MonoBehaviour
             OnGoldChanged?.Invoke();
             return true;
         }
+    }
+    
+    public void EarnEXP(int amount)
+    {
+        exp += amount; 
+        if(exp > maxEXP)
+        {
+            exp -= maxEXP;
+            level++;
+            OnLevelChanged?.Invoke();
+        }
+        OnExpChanged?.Invoke();
     }
 }
