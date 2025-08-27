@@ -96,11 +96,11 @@ public class PlayerMovementController : MonoBehaviour
 
     private void FindNewTargetFromList()
     {
-        if (enemyTargets == null || enemyTargets.Count == 0)
-        {
-            //todo: Stage Clear
-            return;
-        }
+        //if (enemyTargets == null || enemyTargets.Count == 0)
+        //{
+        //    //todo: Stage Clear
+        //    return;
+        //}
 
         GameObject closestTargetObject = null;
         float closestDistance = Mathf.Infinity; //Max값을 무한으로 일단 지정
