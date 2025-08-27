@@ -59,7 +59,6 @@ public class UIManager : MonoBehaviour
 
     private void PlayerGoldChanged()
     {
-        Debug.Log("PlayerGoldChanged");
-        goldText.text = GameManager.Instance.Gold.ToString();
+        goldText.text = GameManager.Instance.gold.ToString();
     }
 }

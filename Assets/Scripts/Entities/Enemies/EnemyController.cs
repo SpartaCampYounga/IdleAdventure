@@ -19,6 +19,9 @@ public class EnemyController : MonoBehaviour, IDamagable
     public int currentHealth;
     public int maxHealth = 30;
 
+    [Header("Reward")]
+    public int rewardGold = 10;
+
     private Rigidbody _rigidbody;
     private Transform playerTarget;
     private bool canAttack = true;
@@ -104,7 +107,12 @@ public class EnemyController : MonoBehaviour, IDamagable
     void Die()
     {
         Debug.Log($"{id}(이)가 처치되었습니다.");
-        //to do: 재화/경험치 획득
+        RewardPlayer();
         Destroy(gameObject);    //to do: 오브젝트 풀링 배우면 Destory 대신에 오브젝트 풀링 쓰기.
+    }
+
+    void RewardPlayer()
+    {
+        GameManager.Instance.EarnGold(rewardGold);
     }
 }

@@ -7,16 +7,16 @@ public class GameManager : MonoBehaviour
 {
     [Header("Player")]
     public Player player;
-    private int gold = 0;
-    public int Gold
-    {
-        get { return gold; }
-        set     //일단은 퍼블릭 셋터 접근 허용.
-        { 
-            gold = value;
-            OnGoldChanged?.Invoke();
-        }
-    }
+    public int gold { get; private set; }
+    //public int Gold
+    //{
+    //    get { return gold; }
+    //    private set
+    //    { 
+    //        gold = value;
+    //        OnGoldChanged?.Invoke();
+    //    }
+    //}
     public Action OnGoldChanged;
 
     private static GameManager instance;
@@ -42,13 +42,40 @@ public class GameManager : MonoBehaviour
             Destroy(this.gameObject);
         }
         player = FindObjectOfType<Player>();
+        gold = 0;
     }
 
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.UpArrow))
         {
-            Gold++;
+            EarnGold(10);
+        }
+        if (Input.GetKeyDown(KeyCode.DownArrow))
+        {
+            if(!SpendGold(10))
+            {
+                Debug.Log("골드 부족");
+            }
+        }
+    }
+
+    public void EarnGold(int amount)
+    {
+        gold += amount;
+        OnGoldChanged?.Invoke();
+    }
+    public bool SpendGold(int amount)
+    {
+        if (amount > gold)
+        {
+            return false;
+        }
+        else
+        {
+            gold -= amount;
+            OnGoldChanged?.Invoke();
+            return true;
         }
     }
 }
