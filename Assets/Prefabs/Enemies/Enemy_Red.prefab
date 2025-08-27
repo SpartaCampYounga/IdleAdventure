@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 3580999624827495280}
   - component: {fileID: 8566497037666623219}
   - component: {fileID: 17651085634366213}
-  m_Layer: 0
-  m_Name: Enemy
+  m_Layer: 8
+  m_Name: Enemy_Red
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -111,7 +111,7 @@ GameObject:
   - component: {fileID: 8092833823640680547}
   - component: {fileID: 1647434112717913154}
   - component: {fileID: 6593665363190976965}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}

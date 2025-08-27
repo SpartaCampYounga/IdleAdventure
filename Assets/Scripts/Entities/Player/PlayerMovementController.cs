@@ -48,27 +48,28 @@ public class PlayerMovementController : MonoBehaviour
 
     private void FixedUpdate()  //rigidbody 
     {
+        if (targetEnemy != null)
+        {
+            Vector3 direction = (targetEnemy.position - transform.position).normalized;
+            direction.y = 0;
+
+            if (direction != Vector3.zero)
+            {
+                Quaternion targetRotation = Quaternion.LookRotation(direction);
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.fixedDeltaTime);
+            }
+        }
         switch (currentState)
         {
             case PlayerState.Idle:
                 _rigidbody.velocity = Vector3.zero;
                 break;
             case PlayerState.Move:
-                //if (Vector3.Distance(transform.position, targetEnemy.position) < attackRange)
-                //{
-                //    _rigidbody.velocity = Vector3.zero;
-                //    currentState = PlayerState.Attack;
-                //}
-                Vector3 direction = (targetEnemy.position - transform.position).normalized;
-                direction.y = 0;
-
+                if (targetEnemy == null) break;
                 //높이 속도 유지하면서 이동하기. //음.. 점프 기능 없는데 필요한가?
-                Vector3 moveVelocity = direction * moveSpeed;
+                Vector3 moveVelocity = (targetEnemy.position - transform.position).normalized * moveSpeed;
                 moveVelocity.y = _rigidbody.velocity.y;
                 _rigidbody.velocity = moveVelocity;
-
-                Quaternion targetRotation = Quaternion.LookRotation(direction);
-                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.fixedDeltaTime);
 
                 break;
             case PlayerState.Attack:
@@ -80,6 +81,13 @@ public class PlayerMovementController : MonoBehaviour
                 }
                 break;
         }
+    }
+
+    public void SetEnemyTargetList(List<GameObject> enemies)
+    {
+        this.enemyTargets = enemies;
+        Debug.Log($"Player: {this.enemyTargets.Count}마리 적 리스트를 받았습니다.");
+        FindNewTargetFromList();
     }
 
     private void FindNewTargetFromList()

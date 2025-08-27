@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2a54add8dabb724a8b888a731857693, type: 3}
   m_Name: Enemy_111
   m_EditorClassIdentifier: 
-  enemyName: 111
+  enemyName: Red
   maxHealth: 11
   attackDamage: 5
   attackRange: 2
   attactInterval: 3
   rewardGold: 111
   rewardEXP: 111
-  enemyPrefab: {fileID: 0}
+  enemyPrefab: {fileID: 2495756915343392367, guid: e79a965f7b3ac244dac48fbfd15bc773, type: 3}

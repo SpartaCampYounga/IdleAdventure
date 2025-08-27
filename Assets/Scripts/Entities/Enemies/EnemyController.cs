@@ -5,8 +5,6 @@ using UnityEngine;
 public class EnemyController : MonoBehaviour, IDamagable
 {
     [Header("Configuration")]
-    //private static int nextId = 1;
-    //public int id;  //임시 이너미 구분하려고 썼었음.
     public EnemyData enemyData;
 
     [Header("Movement")]
@@ -14,25 +12,11 @@ public class EnemyController : MonoBehaviour, IDamagable
     public float rotationSpeed = 5f;
 
     [Header("Status")]
-    //public int attactDamage = 10;
-    //public float attactRange = 2f;
-    //public float attackInterval = 1f;
-    
     public int currentHealth;
-    //public int maxHealth = 30;
-
-    [Header("Reward")]
-    //public int rewardGold = 10;
-    //public int rewardEXP = 30;
 
     private Rigidbody _rigidbody;
     private Transform playerTarget;
     private bool canAttack = true;
-
-    //private void Awake()
-    //{
-    //    id = nextId++;
-    //}
 
     private void Start()
     {
@@ -120,6 +104,9 @@ public class EnemyController : MonoBehaviour, IDamagable
     {
         Debug.Log($"{enemyData.name}(이)가 처치되었습니다.");
         RewardPlayer();
+
+        GameManager.Instance.stageManager.OnEnemyDefeated(this.gameObject);
+
         Destroy(gameObject);    //to do: 오브젝트 풀링 배우면 Destory 대신에 오브젝트 풀링 쓰기.
     }
 

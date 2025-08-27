@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class GameManager : MonoBehaviour
 {
@@ -14,6 +16,10 @@ public class GameManager : MonoBehaviour
     public Action OnExpChanged;
 
     public int maxEXP = 50; //임시 변수. //todo: 레벨업 공식 만들기.
+
+    [Header("Stages")]
+    public StageData[] allStageData;
+    public StageManager stageManager { get; private set; }
 
     private static GameManager instance;
     public static GameManager Instance
@@ -38,8 +44,14 @@ public class GameManager : MonoBehaviour
             Destroy(this.gameObject);
         }
         player = FindObjectOfType<Player>();
-        gold = 0;
+        gold = 0;   //나중에는 저장된 값 불러오기로 확장 
         level = 1;
+        stageManager = FindObjectOfType<StageManager>();
+    }
+
+    private void Start()
+    {
+        StartRandomStage();
     }
 
     private void Update()
@@ -56,6 +68,36 @@ public class GameManager : MonoBehaviour
             }
         }
     }
+
+    public void StartRandomStage()
+    {
+        if(allStageData.Length == 0)
+        {
+            Debug.Log("스테이지 하나도 없음...");
+            return;
+        }
+
+        int randomIndex = Random.Range(0, allStageData.Length);
+        StageData newStageData = allStageData[randomIndex];
+
+        stageManager.InitStage(newStageData);
+    }
+
+    public void EndStage()
+    {
+        //todo: UI로 표현하기
+        Debug.Log("스테이지 완료");
+
+        Invoke("StartRandomStage", 3f);
+    }
+
+    public void UpdatePlayerEnemyList(List<GameObject> enemies)
+    {
+        Debug.Log($"GameManager: 플레이어에게 {enemies.Count}마리 적 리스트 전달.");
+        player.Movement.SetEnemyTargetList(enemies);
+    }
+
+    /////////Sett 메서드들
 
     public void EarnGold(int amount)
     {

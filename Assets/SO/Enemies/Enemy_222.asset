@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2a54add8dabb724a8b888a731857693, type: 3}
   m_Name: Enemy_222
   m_EditorClassIdentifier: 
-  enemyName: 222
+  enemyName: Blue
   maxHealth: 22
   attackDamage: 5
   attackRange: 2
   attactInterval: 3
   rewardGold: 222
   rewardEXP: 222
-  enemyPrefab: {fileID: 0}
+  enemyPrefab: {fileID: 2495756915343392367, guid: ca593d4d7205dbf478c4021e32b594b0, type: 3}
