@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-[CreateAssetMenu(fileName = "NewPotionItem", menuName = "Items/Potion Item")]
+[CreateAssetMenu(fileName = "Potion_", menuName = "Items/Potion Item")]
 public class PortionItemData : ItemDataBase
 {
     [Header("Potion Properties")]   //나중에 타입 추가 할지도

@@ -14,6 +14,9 @@ public class UIManager : MonoBehaviour
     [Header("Gold UI")]
     [SerializeField] private TextMeshProUGUI goldText;
 
+    [Header("Inventory UI")]
+    [SerializeField] private Button inventoryButton;
+    [SerializeField] private GameObject inventoryUI;
 
     private PlayerCondition playerCondition;
 
@@ -50,6 +53,8 @@ public class UIManager : MonoBehaviour
         GameManager.Instance.OnGoldChanged += PlayerGoldChanged;
         GameManager.Instance.OnLevelChanged += PlayerLevelChanged;
         GameManager.Instance.OnExpChanged += PlayerEXPChanged;
+
+        inventoryButton.onClick.AddListener(OnInventoryButtonClicked);
     }
 
     private void OnDestroy()
@@ -84,5 +89,17 @@ public class UIManager : MonoBehaviour
     private void PlayerLevelChanged()
     {
         levelText.text = GameManager.Instance.level.ToString();
+    }
+
+    private void OnInventoryButtonClicked()
+    {
+        if(inventoryUI.gameObject.activeSelf)
+        {
+            inventoryUI.gameObject.SetActive(false);
+        }
+        else
+        {
+            inventoryUI.gameObject.SetActive(true);
+        }
     }
 }

@@ -5,10 +5,14 @@ using UnityEngine;
 public class PlayerAttackController : MonoBehaviour
 {
     [Header("Configuration")]
-    public int attackDamage = 10;
-    public float attackInterval = 1f;
+    private Player player;
 
     private bool canAttack = true;
+
+    private void Start()
+    {
+        player = GameManager.Instance.player;
+    }
 
     public void PerformAttack(IDamagable target)
     {
@@ -16,7 +20,7 @@ public class PlayerAttackController : MonoBehaviour
         {
             if (target != null)
             {
-                target.TakeDamage(attackDamage);
+                target.TakeDamage(player.Condition.totalAttackDamage);
 
                 StartCoroutine(AttackCooldownCoroutine());
             }
@@ -25,7 +29,7 @@ public class PlayerAttackController : MonoBehaviour
     private IEnumerator AttackCooldownCoroutine()
     {
         canAttack = false;
-        yield return new WaitForSeconds(attackInterval);
+        yield return new WaitForSeconds(player.Condition.totalAttackInterval);
         canAttack = true;
     }
 }

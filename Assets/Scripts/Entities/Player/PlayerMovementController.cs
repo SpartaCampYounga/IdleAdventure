@@ -14,7 +14,7 @@ public class PlayerMovementController : MonoBehaviour
     private PlayerAttackController attackController;
 
     [Header("Enemies")]
-    [SerializeField ]private List<GameObject> enemyTargets;  //GameManager에서 Stage 변경될때 지정해주기. 일단은 SerializeField 설정
+    private List<GameObject> enemyTargets;
     public Transform targetEnemy;
 
     void Start()

@@ -23,6 +23,7 @@ public class GameManager : MonoBehaviour
 
     [Header("Item")]
     public ConsumableSlotContainer consumableSlotContainer;
+    public InventoryContainer inventoryContainer;
 
     [Header("For Test")]
     public ItemDataBase itemDataBase;
@@ -54,6 +55,7 @@ public class GameManager : MonoBehaviour
         level = 1;
         stageManager = FindObjectOfType<StageManager>();
         consumableSlotContainer = FindObjectOfType<ConsumableSlotContainer>();
+        inventoryContainer = FindObjectOfType<InventoryContainer>();
     }
 
     private void Start()
@@ -69,10 +71,7 @@ public class GameManager : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.DownArrow))
         {
-            if (!SpendGold(10))
-            {
-                Debug.Log("골드 부족");
-            }
+            EarnGold(10000);
         }
 
     }

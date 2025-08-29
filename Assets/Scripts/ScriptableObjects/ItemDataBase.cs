@@ -7,7 +7,9 @@ public class ItemDataBase : ScriptableObject
     public string itemName;
     public Sprite itemIcon;
     public string itemDescription;
+    public int price;
 
     public virtual void Use(PlayerCondition player) { }
+    public virtual void Equip(PlayerCondition player) { }
 
 }

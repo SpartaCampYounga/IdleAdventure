@@ -18,5 +18,5 @@ MonoBehaviour:
   attackRange: 2
   attactInterval: 3
   rewardGold: 222
-  rewardEXP: 222
+  rewardEXP: 22
   enemyPrefab: {fileID: 2495756915343392367, guid: ca593d4d7205dbf478c4021e32b594b0, type: 3}
